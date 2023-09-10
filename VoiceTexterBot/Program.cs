@@ -4,6 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
+using VoiceTexterBot.Configuration;
+using VoiceTexterBot.Controllers;
+using VoiceTexterBot.Models;
+using VoiceTexterBot.Services;
+
 
 namespace VoiceTexterBot
 {
@@ -25,12 +30,31 @@ namespace VoiceTexterBot
             Console.WriteLine("Сервис остановлен");
         }
 
+       
         static void ConfigureServices(IServiceCollection services)
         {
-            // Регистрируем объект TelegramBotClient c токеном подключения
-            services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient("6460216049:AAGDoH4_xnpNTng8oBLsdPgtgDaoksut89A"));
-            // Регистрируем постоянно активный сервис бота
+            AppSettings appSettings = BuildAppSettings();
+            services.AddSingleton(BuildAppSettings());
+            // Подключаем контроллеры сообщений и кнопок
+            services.AddTransient<DefaultMessageController>();
+            services.AddTransient<VoiceMessageController>();
+            services.AddTransient<TextMessageController>();
+            services.AddTransient<InlineKeyboardController>();
+
+            services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient(appSettings.BotToken));
             services.AddHostedService<Bot>();
+            services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddSingleton<IFileHandler, AudioFileHandler>();
+        }
+        static AppSettings BuildAppSettings()
+        {
+            return new AppSettings()
+            {
+                DownloadsFolder = "C:\\Users\\dsank\\Downloads",
+                BotToken = "6460216049:AAGDoH4_xnpNTng8oBLsdPgtgDaoksut89A",
+                AudioFileName = "audio",
+                InputAudioFormat = "ogg",
+            };
         }
     }
 }
