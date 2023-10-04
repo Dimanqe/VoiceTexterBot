@@ -51,9 +51,11 @@ namespace VoiceTexterBot
             return new AppSettings()
             {
                 DownloadsFolder = "C:\\Users\\dsank\\Downloads",
-                BotToken = "6460216049:AAGDoH4_xnpNTng8oBLsdPgtgDaoksut89A",
+                BotToken = "6460216049:AAGJqd9HOF3hJ37n4-Mo5CcurEDOPIM_CyY",
                 AudioFileName = "audio",
                 InputAudioFormat = "ogg",
+                OutputAudioFormat = "wav",
+                InputAudioBitrate = 48000
             };
         }
     }
